@@ -1,0 +1,26 @@
+name: ezkey-demo-device
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ezkey-demo-device:local
+    ports:
+      - "3080:8083"
+    environment:
+      # Auth API reachable from the container (override in .env if needed).
+      EZKEY_AUTH_API_URL: ${EZKEY_AUTH_API_URL:-http://host.docker.internal:8080}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - demo-device-data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8083/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  demo-device-data:
