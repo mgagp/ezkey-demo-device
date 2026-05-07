@@ -9,8 +9,8 @@ services:
     ports:
       - "3080:8083"
     environment:
-      # Auth API reachable from the container (override in .env if needed).
-      EZKEY_AUTH_API_URL: ${EZKEY_AUTH_API_URL:-http://host.docker.internal:8080}
+      # Default: Exp1 public Auth API. Override in .env or the shell for a local stack.
+      EZKEY_AUTH_API_URL: ${EZKEY_AUTH_API_URL:-https://exp1-auth-api.ezkey.org}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

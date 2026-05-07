@@ -2,6 +2,8 @@
 
 Standalone Spring Boot app: the **Demo Device** virtual phone for Ezkey. Use it to demo device-side enrollment and authentication against a running Ezkey **Auth API**.
 
+![Ezkey Demo Device — enrollments home](phone_home.webp)
+
 ## Run with Docker only (recommended for demos)
 
 **Prerequisite:** [Docker](https://docs.docker.com/get-docker/) (Compose v2). No JDK or Maven required on the host; the image is built inside Docker with **BuildKit** and a Maven cache mount (same idea as the main Ezkey repo).
@@ -17,7 +19,7 @@ From the repository root, use whichever launcher you prefer:
 
 This maps the app to **http://localhost:3080** (container listens on 8083 internally).
 
-Without a `.env` file, Compose defaults to **http://host.docker.internal:8080** (Auth API on your host). The checked-in **`.env.example`** targets the **Exp1** Auth API (**https://exp1-auth-api.ezkey.org**); copy it to `.env` to use that stack, or set `EZKEY_AUTH_API_URL` / export it before Compose.
+By default, the container uses the **Exp1** Auth API (**https://exp1-auth-api.ezkey.org**). For a **local** clean-start Auth API on your machine, set `EZKEY_AUTH_API_URL=http://host.docker.internal:8080` in a `.env` file (see **`.env.example`**) or export it before Compose.
 
 Stop (foreground run): `Ctrl+C`. If you started detached (`-Detach` / `-d`), run: `docker compose down`.
 
