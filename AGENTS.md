@@ -23,19 +23,25 @@ Standalone Docker default remains Exp1 (`https://exp1-auth-api.ezkey.org`); QR l
 
 ## Jackson 3 posture (Boot 4)
 
+Ezkey uses the **Jackson 3 engine** with **FasterXML annotations** unchanged ([JSTEP-1](https://github.com/FasterXML/jackson-future-ideas/wiki/JSTEP-1)):
+
 | Layer | Package | Demo-device usage |
 |-------|---------|-------------------|
 | Engine (`ObjectMapper`, serializers) | `tools.jackson.databind` | `EnrollmentStoreService`, tests |
 | Annotations (`@JsonProperty`, `@JsonInclude`, …) | `com.fasterxml.jackson.annotation` | `EnrollmentStoreService.Record`, OpenAPI-generated DTOs |
 
-Do **not** migrate annotations to `tools.jackson.annotation`.
+Do **not** migrate annotations to `tools.jackson.annotation` — that namespace does not exist by design.
+
+- **No** explicit `com.fasterxml.jackson.databind` or `jackson-datatype-jsr310` dependencies in this module.
+- **OpenAPI generator** (`openapi-generator-maven-plugin`, `java` + `resttemplate`): models only (`generateApis=false`, `generateSupportingFiles=false`, `addCompileSourceRoot=false`). Compile path is scoped to `generated/dto` via build-helper. DTOs use `com.fasterxml.jackson.annotation`; HTTP JSON uses Spring Boot 4 WebClient codecs (Jackson 3).
+- **`openApiNullable=false`** — no `jackson-databind-nullable` dependency.
 
 ## Regression anchor
 
 `EnrollmentStoreRecordJsonRoundtripTest` guards enrollment file JSON field naming and round-trip. Run after mapper or `Record` changes:
 
 ```bash
-mvn test -pl ezkey-demo-device -Dtest=EnrollmentStoreRecordJsonRoundtripTest
+mvn test -Dtest=EnrollmentStoreRecordJsonRoundtripTest
 ```
 
 ## OpenAPI models
