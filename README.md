@@ -21,6 +21,8 @@ This maps the app to **http://localhost:3080** (container listens on 8083 intern
 
 By default, the container uses the **Exp1** Auth API (**https://exp1-auth-api.ezkey.org**). For a **local** clean-start Auth API on your machine, set `EZKEY_AUTH_API_URL=http://host.docker.internal:8080` in a `.env` file (see **`.env.example`**) or export it before Compose.
 
+**Enrollment QR with `authUrl`:** When you import an Admin UI enrollment QR that includes `authUrl` (local stack or Exp1), the demo device routes bind, verify, and auth-attempt calls to that URL for that enrollment — even if the Docker default points at Exp1. Manual ID+token entry without QR still uses the configured default only; no `.env` override is required for the common local-QR + standalone `:3080` workflow.
+
 Stop (foreground run): `Ctrl+C`. If you started detached (`-Detach` / `-d`), run: `docker compose down`.
 
 ## Run locally (JDK + Maven)

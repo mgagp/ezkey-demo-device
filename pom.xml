@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.6</version>
+		<version>4.1.0</version>
 		<relativePath/>
 	</parent>
 
@@ -20,9 +20,8 @@
 
 	<properties>
 		<java.version>25</java.version>
-		<openapi-generator-maven-plugin.version>7.21.0</openapi-generator-maven-plugin.version>
+		<openapi-generator-maven-plugin.version>7.23.0</openapi-generator-maven-plugin.version>
 		<build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-		<jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
 	</properties>
 
 	<dependencies>
@@ -34,13 +33,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
 		</dependency>
 
 		<dependency>
@@ -65,19 +57,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>jakarta.validation</groupId>
 			<artifactId>jakarta.validation-api</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>jackson-databind-nullable</artifactId>
-			<version>${jackson-databind-nullable.version}</version>
 		</dependency>
 
 		<dependency>
@@ -106,6 +87,13 @@
 						<configuration>
 							<inputSpec>${project.basedir}/openapi-spec.json</inputSpec>
 							<generatorName>java</generatorName>
+							<addCompileSourceRoot>false</addCompileSourceRoot>
+							<generateApis>false</generateApis>
+							<generateApiTests>false</generateApiTests>
+							<generateApiDocumentation>false</generateApiDocumentation>
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<generateModelTests>false</generateModelTests>
+							<generateModelDocumentation>true</generateModelDocumentation>
 							<configOptions>
 								<dateLibrary>java8</dateLibrary>
 								<modelDateTimeMapping>LocalDateTime</modelDateTimeMapping>
@@ -113,10 +101,7 @@
 								<modelFormatPattern>yyyy-MM-dd'T'HH:mm:ss.SSSSSS</modelFormatPattern>
 								<library>resttemplate</library>
 								<useJakartaEe>true</useJakartaEe>
-								<useSpringBoot3>true</useSpringBoot3>
-								<generateApis>false</generateApis>
-								<generateSupportingFiles>false</generateSupportingFiles>
-								<generateApiDocumentation>false</generateApiDocumentation>
+								<useSpringBoot4>true</useSpringBoot4>
 								<hideGenerationTimestamp>true</hideGenerationTimestamp>
 								<useBeanValidation>true</useBeanValidation>
 								<jacksonJsonInclude>NON_NULL</jacksonJsonInclude>
@@ -139,8 +124,6 @@
 							<modelPackage>org.ezkey.demodevice.generated.dto</modelPackage>
 							<apiPackage>org.ezkey.demodevice.generated.api</apiPackage>
 							<invokerPackage>org.ezkey.demodevice.generated.client</invokerPackage>
-							<generateModelDocumentation>true</generateModelDocumentation>
-							<generateApiDocumentation>false</generateApiDocumentation>
 							<modelNameSuffix></modelNameSuffix>
 							<removeOperationIdPrefix>true</removeOperationIdPrefix>
 						</configuration>
@@ -148,6 +131,11 @@
 				</executions>
 			</plugin>
 
+			<!-- Compile generated Auth API DTOs only (models). The java/resttemplate generator
+			     still emits client helpers (RFC3339*, ApiClient) that import
+			     com.fasterxml.jackson.databind; useJackson3 is not supported for resttemplate.
+			     WebClient uses Spring Boot 4 Jackson 3 codecs; DTOs keep
+			     com.fasterxml.jackson.annotation by design (JSTEP-1). -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -161,7 +149,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
+								<source>${project.build.directory}/generated-sources/openapi/src/main/java/org/ezkey/demodevice/generated/dto</source>
 							</sources>
 						</configuration>
 					</execution>
