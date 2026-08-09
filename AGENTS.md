@@ -50,6 +50,24 @@ mvn test -Dtest=EnrollmentStoreRecordJsonRoundtripTest
 - Generated package: `org.ezkey.demodevice.generated.dto`.
 - Hand-written HTTP: `AuthApiService` (WebClient + generated DTOs).
 
+## Agent-assisted Admin UI login
+
+When an agent (Cursor MCP browser or similar) must approve passwordless Admin UI login:
+
+1. Prefer hostname **`localhost`**, not `127.0.0.1`, in the Cursor embedded browser on Windows
+   (IPv6 `::1` bind quirks). Use **`http://localhost:3080/phone/ezkey`** for this standalone
+   Docker default, or **`http://localhost:8083/phone/ezkey`** when paired with monorepo clean-start.
+2. Open the target enrollment card (`data-testid="demo-device-enrollment-link"`), then the auth
+   page; reload until **Approve** / **Deny** appear while the Admin UI waiting countdown is still
+   live.
+3. After **Approve** and the success result, click
+   `[data-testid="demo-device-back-to-enrollments"]` (primary **Back to Enrollments**). The side-exit
+   control (`demo-device-auth-back`, labeled **Exit to enrollments list**) is a secondary escape
+   hatch — do not prefer it for the standard handshake.
+4. When used with the Ezkey monorepo Admin UI, follow the monorepo recipe
+   `docs/testing/AGENT_UI_VALIDATION.md` § *Step 4 — MCP browser* (Playwright mirror:
+   `ezkey-admin-ui/e2e/support/auth-flow.ts`).
+
 ## Running
 
 **Docker (Exp1 / demos):** `./start.sh` or `start.cmd` — http://localhost:3080. Default Auth API: `https://exp1-auth-api.ezkey.org` (override via `.env`; see `.env.example`). QR `authUrl` overrides this default per enrollment without `.env` change.
